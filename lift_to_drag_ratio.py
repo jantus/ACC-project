@@ -16,11 +16,8 @@ import os
 #	filepath: Path o the file
 ###############################################################################
 def get_data_from_file(filepath):
-	path = "naca_airfoil/navier_stokes_solver/results/"
-	filename = "drag_ligt.m"
-
 	content_list = []
-	if os.isfile(filepath):
+	if os.path.isfile(filepath):
 		f = open(filepath, "r")
 		file_content = f.read()
 		content_list = file_content.split("\n")
@@ -38,7 +35,7 @@ def get_data_from_file(filepath):
 ###############################################################################
 def calculate_lift_to_drag_ratio(data_list):
 	result_list = []
-	for line in content_list:
+	for line in data_list:
 		element = line.split("\t")
 		if len(element) < 3:
 			continue
@@ -47,4 +44,36 @@ def calculate_lift_to_drag_ratio(data_list):
 
 
 
+###############################################################################
+# Finds the largest lift to drag ratio in a list
+# 
+# Arguments(1):
+#	lift_to_drag_list: list (time, lift_to_drag_ratio)
+# Return:
+#	(time, lift_to_drag_ratio)	
+###############################################################################
+def max_lift_to_drag_ratio(lift_to_drag_list):
+	return max(lift_to_drag_list, key=lambda item:item[1])
 
+###############################################################################
+# Finds the average lift to drag of list
+# 
+# Arguments(1):
+#	lift_to_drag_list: list (time, lift_to_drag_ratio)
+# Return:
+#	average_lift_to_drag_ratio
+###############################################################################
+def average_lift_to_drag_ratio(lift_to_drag_list):
+	return sum([element[1] for element in lift_to_drag_list])/len(lift_to_drag_list)
+
+
+
+###############################################################################
+# main loop
+###############################################################################
+path = "naca_airfoil/navier_stokes_solver/results/"
+filename = "drag_ligt.m"
+data_list = get_data_from_file(path+filename)
+lift_to_drag_list = calculate_lift_to_drag_ratio(data_list)
+print "max:",max_lift_to_drag_ratio(lift_to_drag_list)
+print "average:", average_lift_to_drag_ratio(lift_to_drag_list)
