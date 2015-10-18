@@ -27,10 +27,11 @@ def main():
 
 	## run airfoul
 	os.chdir("navier_stokes_solver")
-	path = "../msh"
+	path = "../msh/"
 	for data_file in os.listdir(path):
 		file_path, extension = os.path.splitext(data_file) 
 		if extension == ".xml":
+			data_file = path+data_file
 			## start new worker
 			airfoil(num_samples, visc, speed, T, data_file)
 
