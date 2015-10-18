@@ -11,7 +11,6 @@ import sys
 import subprocess
 import os
 
-script_dir = "naca_airfoil"
 ###############################################################################
 # Execute the run.sh script with the given parameters
 # Arguments(0):
@@ -25,11 +24,7 @@ script_dir = "naca_airfoil"
 ###############################################################################
 
 def run_script(angle_start, angle_stop, n_angles, n_nodes, n_levels):
-	cwd = os.getcwd()
-	os.chdir(script_dir)
-	
 	try: 
-		print os.getcwd()
 		print "$ ./run.sh", angle_start, angle_stop, n_angles, n_nodes, n_levels
 		print "Loading..."
 		subprocess.check_call(["./run.sh", angle_start, angle_stop, n_angles, n_nodes, n_levels])
@@ -39,21 +34,32 @@ def run_script(angle_start, angle_stop, n_angles, n_nodes, n_levels):
 	except:
 		print "Unexpected error:", sys.exc_info()[0]	
 		return False
-	os.chdir(cwd)
 	return True
 	
 
 
 ###############################################################################
-# main loop
+# Execute the airfoil binary
+# Arguments(5):
+#	num_samplse	: Number of samplse
+#	visc		: The viscosity
+#	spped		: The speed of the aircraft in m/s
+#	T		: Total time
+#	mesh 		: Path to a mesh file
+# Return:
 ###############################################################################
-angle_start = str(0)
-angle_stop = str(30)
-n_angles = str(10)
-n_nodes = str(200)
-n_levels = str(3)
 
-if run_script(angle_start, angle_stop, n_angles, n_nodes, n_levels):
-	print "Success: Data generated"
-else:
-	print "Failed: Data not generated"
+def airfoil(num_samples, visc, speed, T, mesh):
+	try: 
+		print "$ ./airfoil", num_samples, visc, speed, T, mesh
+		print "Loading..."
+		subprocess.check_call(["./airfoil", num_samples, visc, speed, T, mesh])
+	except subprocess.CalledProcessError:
+		print "Oops: ./airfoil could not finish"
+		return False
+	except:
+		print "Unexpected error:", sys.exc_info()[0]	
+		return False
+	return True
+	
+
