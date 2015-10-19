@@ -7,7 +7,6 @@ import os
 from convert2xml import convert_files_at_path
 fapp = Flask(__name__)
 
-
 @fapp.route('/gen_meshes',methods=['get'])
 def gen_meshes():
     angle_start = str(0)
@@ -22,7 +21,13 @@ def gen_meshes():
 def run_airfoil():
     taskList = []
     n = 0
+    fileList = []
+    
     for file in os.listdir('naca_airfoil/msh'):
+    fileList.append(file)    
+    for file in fileList():
+        if(n > 2):
+            break
         taskList.append(runairfoil.delay('res'+str(n),'10','0.0001','10','1',str(file)))
         n = n + 1
     for i in range(0,len(taskList)):
