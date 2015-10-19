@@ -5,22 +5,20 @@ import sys
 import subprocess
 
 os.putenv("LC_ALL", "en_US.UTF-8")
-CELERY_REDIRECT_STDOUTS = False
-app = Celery('airfoilWorker',backend='amqp',broke='amqp://')
+#CELERY_REDIRECT_STDOUTS = False
+#app = Celery('airfoilWorker',backend='amqp',broke='amqp://')
 
 mshPath = "naca_airfoil/msh/"
 
 
-@app.task
+#@app.task
 def runairfoil(resPath,nSamples,nu,v,t,filename):
     out_file = ""
     file_path, file_extension = os.path.splitext(filename)
-    if file_extension = ".msh":
-        in_file = path+filename
-        out_file = path+file_path+".xml"
-        if os.path.isfile(out_file):
-            continue
-        else:
+    if file_extension == ".msh":
+        in_file = mshPath+filename
+        out_file = mshPath+file_path+".xml"
+        if not(os.path.isfile(out_file)):
             gmsh2xml(in_file, out_file)
         if os.path.isfile(in_file):
             try:
@@ -30,8 +28,8 @@ def runairfoil(resPath,nSamples,nu,v,t,filename):
     else:
         out_file = filename
     currentDir = os.getcwd()
-    os.makedirs(resPath
-    os.chdir(currentDir+'/'resPath)
+    os.makedirs(resPath)
+    os.chdir(currentDir+ '/' + resPath)
     subprocess.call(['./'+ currentDir + 'naca_airfoil/navier_stokes_solver/airfoil',nSamples,nu,v,t,out_file])
         
     return

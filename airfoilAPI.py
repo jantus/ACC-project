@@ -4,10 +4,10 @@ from generate_data import run_script
 import json
 import os
 from convert2xml import convert_files_at_path
-fapp = Flask(__name__)
+#fapp = Flask(__name__)
 
 
-@fapp.route('/gen_meshes',methods=['get'])
+#@fapp.route('/gen_meshes',methods=['get'])
 def gen_meshes():
     angle_start = str(0)
     angle_stop = str(30)
@@ -17,7 +17,7 @@ def gen_meshes():
     run_script(angle_start,angle_stop,n_angles,n_nodes,n_levels)
     return json.dumps({"gen":"finished"})
 
-@fapp.route('/run_airfoil',methods=['get'])
+#@fapp.route('/run_airfoil',methods=['get'])
 def run_airfoil():
     taskList = []
     n = 0
@@ -29,10 +29,13 @@ def run_airfoil():
             continue
     return jsom.dumps({"airfoil":"finished"})
 
-@fapp.route('/run',methods=['get'])
+#@fapp.route('/run',methods=['get'])
 def run():
     obj = gen_meshes()
-    obj2 = run_airfoil():
+    obj2 = run_airfoil()
     return obj2
+
+#if __name__ == '__main__':
+#	fapp.run(host='0.0.0.0',debug=True)
             
     

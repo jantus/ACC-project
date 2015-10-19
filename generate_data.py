@@ -47,13 +47,13 @@ def run_script(angle_start, angle_stop, n_angles, n_nodes, n_levels):
 ###############################################################################
 # main loop
 ###############################################################################
-angle_start = str(0)
-angle_stop = str(30)
-n_angles = str(10)
-n_nodes = str(200)
-n_levels = str(3)
+#angle_start = str(0)
+#angle_stop = str(30)
+#n_angles = str(10)
+#n_nodes = str(200)
+#n_levels = str(3)
 
-if run_script(angle_start, angle_stop, n_angles, n_nodes, n_levels):
-	print "Success: Data generated"
-else:
-	print "Failed: Data not generated"
+#if run_script(angle_start, angle_stop, n_angles, n_nodes, n_levels):
+#	print "Success: Data generated"
+#else:
+#	print "Failed: Data not generated"
