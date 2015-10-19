@@ -30,8 +30,9 @@ def runairfoil(resPath,nSamples,nu,v,t,filename):
     currentDir = os.getcwd()
     os.makedirs(resPath)
     os.chdir(currentDir+ '/' + resPath)
-    subprocess.call(['./'+ currentDir + 'naca_airfoil/navier_stokes_solver/airfoil',nSamples,nu,v,t,out_file])
-        
+    airfoilpath =  './../naca_airfoil/navier_stokes_solver/airfoil'
+    outPath = '../'+out_file    
+    subprocess.call([airfoilpath,nSamples,nu,v,t,outPath],stdout=open(os.devnull,'w'))
     return
 
 
