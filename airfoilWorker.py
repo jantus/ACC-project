@@ -8,12 +8,11 @@ os.putenv("LC_ALL", "en_US.UTF-8")
 CELERY_REDIRECT_STDOUTS = False
 app = Celery('airfoilWorker',backend='amqp',broke='amqp://')
 
-path = "../../msh/"
+mshPath = "naca_airfoil/msh/"
+
 
 @app.task
 def runairfoil(resPath,nSamples,nu,v,t,filename):
-    os.makedirs(resPath
-    os.chdir(resPath)
     out_file = ""
     file_path, file_extension = os.path.splitext(filename)
     if file_extension = ".msh":
@@ -30,7 +29,10 @@ def runairfoil(resPath,nSamples,nu,v,t,filename):
                 print "Could not remove "+str(in_file)+" due to unexpected error:", sys.exc_info()[0]
     else:
         out_file = filename
-        subprocess.call(['./navier_stokes_solver/airfoil',nSamples,nu,v,t,out_file])
+    currentDir = os.getcwd()
+    os.makedirs(resPath
+    os.chdir(currentDir+'/'resPath)
+    subprocess.call(['./'+ currentDir + 'naca_airfoil/navier_stokes_solver/airfoil',nSamples,nu,v,t,out_file])
         
     return
 
