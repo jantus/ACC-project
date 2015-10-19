@@ -6,12 +6,11 @@ import subprocess
 
 os.putenv("LC_ALL", "en_US.UTF-8")
 #CELERY_REDIRECT_STDOUTS = False
-#app = Celery('airfoilWorker',backend='amqp',broke='amqp://')
+app = Celery('airfoilWorker',backend='amqp',broke='amqp://')
 
 mshPath = "naca_airfoil/msh/"
 
-
-#@app.task
+@app.task
 def runairfoil(resPath,nSamples,nu,v,t,filename):
     out_file = ""
     file_path, file_extension = os.path.splitext(filename)
@@ -28,6 +27,11 @@ def runairfoil(resPath,nSamples,nu,v,t,filename):
     else:
         out_file = filename
     currentDir = os.getcwd()
+    if os.path.isdir(resPath):
+        for file in os.listdir(resPath+'/results'):
+            os.remove(resPath+'/results/'+file)
+        os.rmdir(resPath+'/results')
+        os.rmdir(resPath)
     os.makedirs(resPath)
     os.chdir(currentDir+ '/' + resPath)
     airfoilpath =  './../naca_airfoil/navier_stokes_solver/airfoil'
