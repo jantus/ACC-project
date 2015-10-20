@@ -24,11 +24,14 @@ def run_airfoil():
     fileList = []
     
     for file in os.listdir('naca_airfoil/msh'):
-    fileList.append(file)    
-    for file in fileList():
-        if(n > 2):
+        fileList.append(file)    
+    for file in fileList:
+          
+        if(n > 1):
             break
-        taskList.append(runairfoil.delay('res'+str(n),'10','0.0001','10','1',str(file)))
+        print file
+        mesh = open(file,'r')
+        taskList.append(runairfoil.delay('res'+str(n),'10','0.0001','10','1',str(file),mesh.read()))
         n = n + 1
     for i in range(0,len(taskList)):
         while taskList[i].ready():
