@@ -40,7 +40,7 @@ def convertFile(fileName, mshFile):
 	visc = str(0.0001)
 	speed = str(10.)
 	T = str(1)
-	subprocess.call(["./airfoil", num, visc, speed, T, "../" + xmlFileName + " > output.log"], cwd=fileNameWithoutExtension+"/")
+	subprocess.call(["./airfoil", num, visc, speed, T, "../" + xmlFileName], cwd=fileNameWithoutExtension+"/")
 	##########################################
 	######### Get drag_ligt.m values #########
 	##########################################
