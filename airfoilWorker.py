@@ -7,7 +7,7 @@ import subprocess
 os.putenv("LC_ALL", "en_US.UTF-8")
 #CELERY_REDIRECT_STDOUTS = False
 #app = Celery('airfoilWorker',backend='amqp',broke='amqp://')
-app = Celery('airfoilWorker',backend='amqp',broker='amqp://asd:asd@130.238.29.83:5672//asd')
+app = Celery('airfoilWorker',backend='amqp',broker='amqp://asd:asd@130.238.29.83:5672/asd')
 mshPath = "naca_airfoil/msh/"
 currentDir = ""
 @app.task

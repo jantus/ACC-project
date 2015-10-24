@@ -30,7 +30,7 @@ def run_airfoil():
         if(n > 1):
             break
         print file
-        mesh = open(file,'r')
+        mesh = open('naca_airfoil/msh/'+file,'r')
         taskList.append(runairfoil.delay('res'+str(n),'10','0.0001','10','1',str(file),mesh.read()))
         n = n + 1
     for i in range(0,len(taskList)):
