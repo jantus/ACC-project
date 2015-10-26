@@ -1,7 +1,7 @@
 import os
 from generate_data import run_script
 from convert2xml import convert_files_at_path as convert
-from celeryapp import run_airfoil
+from generate_data import airfoil
 
 def main():
 	# Go to the right directory
@@ -11,7 +11,7 @@ def main():
 	# run script
 	angle_start = str(0)
 	angle_stop = str(30)
-	n_angles = str(10)
+	n_angles = str(1)
 	n_nodes = str(200)
 	n_levels = str(3)
 
@@ -33,7 +33,7 @@ def main():
 		if extension == ".xml":
 			## start new worker
 			print data_file
-			run_airfoil(data_file)
+			airfoil(num_samples, visc, speed, T, path+data_file)
 
 if __name__ == "__main__":
 	main()
