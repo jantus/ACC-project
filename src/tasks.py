@@ -11,7 +11,7 @@ app = Celery('tasks', backend='amqp', broker='amqp://antus:antusantus@130.238.29
 
 
 @app.task(bind=True)
-def work(self, run_args, airfoil_args):
+def work(self, run_args, airfoil_args, xml_filename):
 	# go to right place 
 	os.chdir("../naca_airfoil")
 	
@@ -25,7 +25,7 @@ def work(self, run_args, airfoil_args):
 	
 	for data_file in os.listdir(path):
 		file_path, extension = os.path.splitext(data_file)
-		if extension == ".xml":
+		if extension == ".xml" and data_file == xml_filename:
 			## start new worker
 			airfoil(airfoil_args["num_samples"], airfoil_args["visc"], airfoil_args["speed"], airfoil_args["T"], path+data_file)
 			f = open('results/drag_ligt.m', 'r')

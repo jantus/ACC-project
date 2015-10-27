@@ -11,7 +11,7 @@ nc = Client('2',**config)
 KEYPAIRNAME = "openstack-joakim"
 USERDATAFILE = "worker/userdata.yml"
 FLAVOR =  nc.flavors.find(name="m1.medium")
-IMAGE = nc.images.find(name="group-15-worker")
+IMAGE = nc.images.find(name="group15-worker")
 floating_ip = 0
 
 def initialize(name):

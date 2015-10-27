@@ -1,7 +1,10 @@
 from tasks import work as task
 from plot_result import plot_result
+import worker.server as worker
+import time
+
 def main():
-	
+		
 	# run.sh script arguments
 	run_args = {}
 	run_args["angle_start"] = str(0)
@@ -24,12 +27,29 @@ def main():
 	print
 
 	##########################################################	
+	# Add workers	
+	##########################################################	
+	num_workers = 1
+	worker_name = "group15-worker-"
+
+	for i in range(0, num_workers):
+		print "Starting worker named: ", worker_name+str(i)
+		worker.terminate(worker_name+str(i))
+		worker.initialize(worker_name+str(i))
+		
+		print "Crated "+str(num_workers)+" workers"
+
+	time.sleep(20)
+
+	##########################################################	
 	# Add task
 	##########################################################	
 	
-	
-	result = task.delay(run_args, airfoil_args)
+	xml_filename = "r0a0n200.xml"	
+	result = task.delay(run_args, airfoil_args, xml_filename)
 	print "Added Task"
+
+	
 	
 	result_list = result.get()
 	print "Got the result"
