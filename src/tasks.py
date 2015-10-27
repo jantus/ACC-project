@@ -7,7 +7,7 @@ from generate_data import airfoil
 from convert2xml import convert_files_at_path as convert
 from plot_result import plot_result
 
-app = Celery('tasks', backend='amqp', broker='amqp://antus:antusantus@130.238.29.29/vhost_antus')
+app = Celery('tasks', backend='amqp', broker='amqp://antus:antusantus@130.238.29.190/vhost_antus')
 
 
 @app.task(bind=True)
