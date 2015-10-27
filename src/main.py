@@ -1,46 +1,40 @@
-import os
-from generate_data import run_script
-from convert2xml import convert_files_at_path as convert
-from generate_data import airfoil
-from plot_result import plot_result
-
+from tasks import work as task
 def main():
-	# Go to the right directory
-	cwd = os.getcwd()
-	os.chdir("../naca_airfoil") 
 	
-	# run script
-	angle_start = str(0)
-	angle_stop = str(30)
-	n_angles = str(1)
-	n_nodes = str(200)
-	n_levels = str(3)
+	# run.sh script arguments
+	run_args = {}
+	run_args["angle_start"] = str(0)
+	run_args["angle_stop"] = str(30)
+	run_args["n_angles"] = str(1)
+	run_args["n_nodes"] = str(200)
+	run_args["n_levels"] = str(3)
 
-	run_script(angle_start, angle_stop, n_angles, n_nodes, n_levels)
+	# airfoil script argumentes
 
-	## convert files
-	convert("msh/") 	
+	airfoil_args["num_samples"] = str(10)
+	airfoil_args["visc"] = str(0.0001)
+	arifoil_args["speed"] = str(10)
+	airfoil_args["T"] = str(1)
 
-	num_samples = str(10)
-	visc = str(0.0001)
-	speed = str(10)
-	T = str(1)
+	print "arguments are set"
+	print run_args
+	print airfoil_args
+	print
 
-	## run airfoul
-	path = "../msh/"
-	os.chdir("navier_stokes_solver/") 
-	result_list = []
-	for data_file in os.listdir(path):
-		print os.getcwd()
-		file_path, extension = os.path.splitext(data_file) 
-		if extension == ".xml":
-			## start new worker
-			print data_file
-			airfoil(num_samples, visc, speed, T, path+data_file)
-			f = open('results/drag_ligt.m', 'r') 
-			result_list.append((data_file, f.read()))		
-	print result_list 
-	os.chdir(cwd)
+	##########################################################	
+	# Add task
+	##########################################################	
+	
+	
+	result = task.delay(run_args, airfoil_args)
+	print "Added Task"
+	
+	result_list = result.get()
+	print "Got the result"
+	print result_list
+	
+	
+	print "creating plots"
 	for result in result_list:
 		plot_result(result[0], result[1])
 	
