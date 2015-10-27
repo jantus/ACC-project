@@ -1,4 +1,5 @@
 from tasks import work as task
+from plot_result import plot_result
 def main():
 	
 	# run.sh script arguments
@@ -11,9 +12,10 @@ def main():
 
 	# airfoil script argumentes
 
+	airfoil_args = {}
 	airfoil_args["num_samples"] = str(10)
 	airfoil_args["visc"] = str(0.0001)
-	arifoil_args["speed"] = str(10)
+	airfoil_args["speed"] = str(10)
 	airfoil_args["T"] = str(1)
 
 	print "arguments are set"

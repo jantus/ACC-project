@@ -28,4 +28,6 @@ def work(self, run_args, airfoil_args):
 			## start new worker
 			airfoil(airfoil_args["num_samples"], airfoil_args["visc"], airfoil_args["speed"], airfoil_args["T"], path+data_file)
 			f = open('results/drag_ligt.m', 'r')
-			result_list.append((data_file, f.read())
+			result_list.append((data_file, f.read()))
+
+	return result_list
