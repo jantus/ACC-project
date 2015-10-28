@@ -1,0 +1,56 @@
+#cloud-config
+
+#apt_sources:
+#    - source: "ppa:fenics-packages/fenics"
+
+package_update: true
+package_upgrade: true
+
+packages:
+    - git
+    - python-pip
+    - rabbitmq-server
+#    - fenics
+#    - gmsh
+    - python-numpy
+    - python-matplotlib
+    - python-swiftclient
+
+runcmd:
+    - pip install Flask
+    - pip install celery
+    - pip install flower
+    - pip install pickledb
+    - pip install simplejson
+    #- pip install python-swiftclient
+    #- chmod -R 777 /etc/environment
+    #- chmod -R 777 /etc/profile.d
+    #- touch /etc/profile.d/myvar.sh
+    - git clone https://github.com/vallemagnusson/molnProject.git
+    - mv molnProject /home/ubuntu/molnProject
+    - chmod -R 777 /home/ubuntu/molnProject
+    - export C_FORCE_ROOT="true"
+    - export BROKER_USER=mava
+    - export BROKER_PASS=orkarinte
+    - export FLOATING_IP="$(curl ident.me)"
+    - export OS_AUTH_URL=http://smog.uppmax.uu.se:5000/v2.0
+    - export OS_TENANT_ID=3c9d997982e04c6db0e02b82fa18fdd8
+    - export OS_TENANT_NAME="ACC-Course"
+    - export OS_PROJECT_NAME="ACC-Course"
+    - export OS_USERNAME="mava5911"
+    - export OS_PASSWORD="x1xv6565"
+    - export OS_REGION_NAME="regionOne"
+    #- echo "export BROKER_USER=mava" >> /etc/profile.d/myvar.sh
+    #- echo "export BROKER_PASS=orkarinte" >> /etc/profile.d/myvar.sh
+    #- python molnProject/getFloatingIP.py
+    #- echo 'export FLOATING_IP="$(curl ident.me)"' >> /etc/environment
+    #- source /etc/profile.d/myvar.sh
+    - rabbitmqctl add_user mava orkarinte
+    - rabbitmqctl add_vhost app2
+    - rabbitmqctl set_permissions -p app2 mava ".*" ".*" ".*"
+    - cd /home/ubuntu/molnProject
+    - celery flower -A proj &
+    - python flaskApp.py &
+    #- sudo -H -u ubuntu bash -c "source /etc/profile.d/myvar.sh"
+    #- sudo -H -u ubuntu bash -c "celery flower -A proj &"
+    #- sudo -H -u ubuntu bash -c "python flaskApp.py &"
