@@ -40,6 +40,21 @@ def runsh():
 	print visc
 	print speed
 	print T
+	##########################################################	
+	# Add workers	
+	##########################################################	
+	num_workers = int(n_angles)
+	worker_name = "group15-worker-"
+
+	for i in range(0, num_workers):
+		print "Starting worker named: ", worker_name+str(i)
+#		worker.terminate(worker_name+str(i))
+#		worker.initialize(worker_name+str(i))
+		
+		print "Crated "+str(num_workers)+" workers"
+
+#	time.sleep(20)
+
 	
 	#############################################################
 	#	Create args
@@ -108,6 +123,8 @@ def results():
 			print "not in if",result.ready() == True
 
 			if result.ready() == True:
+				print "in if",result.ready() == True
+			
 				res = result.get() 
 				plot_result(res[0], res[1], args) 
 				global result_list
