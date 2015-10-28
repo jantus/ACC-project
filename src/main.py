@@ -43,17 +43,17 @@ def runsh():
 	##########################################################	
 	# Add workers	
 	##########################################################	
-	num_workers = int(n_angles)
+	num_workers = 4#int(n_angles)
 	worker_name = "group15-worker-"
 
 	for i in range(0, num_workers):
 		print "Starting worker named: ", worker_name+str(i)
-#		worker.terminate(worker_name+str(i))
-#		worker.initialize(worker_name+str(i))
+		worker.terminate(worker_name+str(i))
+		worker.initialize(worker_name+str(i))
 		
 		print "Crated "+str(num_workers)+" workers"
 
-#	time.sleep(20)
+	time.sleep(20)
 
 	
 	#############################################################
@@ -97,13 +97,13 @@ def runsh():
 		if os.path.isfile("static/"+plot):
 			print "exists", plot
 			global result_list
-			result_list.append((plot, elem[0], elem[2]))
+			result_list.append((plot, elem[0], elem))
 			
 			display_list.append(plot)
 		else:
 			result = task.delay(elem[1], elem[2], elem[0])
 			global result_list
-			result_list.append((result, elem[0], elem[2]))
+			result_list.append((result, elem[0], elem))
 
 			display_list.append("Waiting for "+plot) 
 	print result_list
@@ -124,11 +124,18 @@ def results():
 
 			if result.ready() == True:
 				print "in if",result.ready() == True
-			
-				res = result.get() 
-				plot_result(res[0], res[1], args) 
-				global result_list
-				result_list[i] = (filename+".png", filename, args) 
+				
+				try:
+					res = result.get() 
+					plot_result(res[0], res[1], args[2]) 
+					global result_list
+					result_list[i] = (filename+".png", filename, args[2]) 
+				except:
+					print "Error occured, Restart"
+					result = task.delay(args[1], args[2], args[0])
+					global result_list
+					result_list[i] = (result, args[0], args) 
+
 			else: 
 				display_list.append("Waiting for "+filename) 					
 		i = i+1

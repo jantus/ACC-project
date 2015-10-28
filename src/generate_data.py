@@ -53,7 +53,8 @@ def airfoil(num_samples, visc, speed, T, mesh):
 	try: 
 		print "$ ./airfoil", num_samples, visc, speed, T, mesh
 		print "Loading..."
-		subprocess.check_call(["./airfoil", num_samples, visc, speed, T, mesh], cwd="../naca_airfoil/navier_stokes_solver")
+		print "AIRFOIL", os.getcwd()
+		subprocess.check_call(["screen ./airfoil", num_samples, visc, speed, T, mesh], cwd="../naca_airfoil/navier_stokes_solver")
 	except subprocess.CalledProcessError:
 		print "Oops: ./airfoil could not finish"
 		return False

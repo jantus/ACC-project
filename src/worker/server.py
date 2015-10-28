@@ -39,16 +39,32 @@ def initialize(name):
         print "Created server named:", SERVERNAME
 
     time.sleep(15)
-   
+    ##############################
+    #### Finding Floating IP #####
+    ##############################
+    floating_ip_information_list = nc.floating_ips.list()
+    floating_ip_list = []
+    for floating_ip_information in floating_ip_information_list:
+        if getattr(floating_ip_information, 'fixed_ip') == None:
+            floating_ip_list.append(getattr(floating_ip_information, 'ip'))
+    if len(floating_ip_list) == 0:
+        new_ip = nc.floating_ips.create(getattr(nc.floating_ip_pools.list()[0],'name'))
+   	print new_ip
+    	floating_ip_list.append(getattr(new_ip, 'ip'))
+    floating_ip = floating_ip_list[0]
+    print floating_ip
     floating_ip = nc.floating_ips.create(nc.floating_ip_pools.find(name="ext-net").name)
-    try:
-        server.add_floating_ip(floating_ip)
-        print "Associated ip "+str(floating_ip.ip)+" with instance"
-    except:
-        print "Could not associate ip with instance, terminated with message:",sys.exc_info()[0]
-        print "Current IPs associated with instance", nc.servers.ips(server)
+    lacks_ip = True
+    while lacks_ip:
+    	try:
+            server.add_floating_ip(floating_ip)
+            print "Associated ip "+str(floating_ip.ip)+" with instance"
+	    lacks_ip = False
+   	except:
+            print "Could not associate ip with instance, terminated with message:",sys.exc_info()[0]
 
-
+    	floating_ip = nc.floating_ips.create(nc.floating_ip_pools.find(name="ext-net").name)
+  
 
     return server, floating_ip.ip
 
