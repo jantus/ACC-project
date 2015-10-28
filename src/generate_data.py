@@ -27,7 +27,7 @@ def run_script(angle_start, angle_stop, n_angles, n_nodes, n_levels):
 	try: 
 		print "$ ./run.sh", angle_start, angle_stop, n_angles, n_nodes, n_levels
 		print "Loading..."
-		subprocess.check_call(["./run.sh", angle_start, angle_stop, n_angles, n_nodes, n_levels])
+		subprocess.check_call(["./run.sh", angle_start, angle_stop, n_angles, n_nodes, n_levels], cwd="../naca_airfoil")
 	except subprocess.CalledProcessError:
 		print "Oops: ./run.sh could not finish"
 		return False
@@ -53,7 +53,7 @@ def airfoil(num_samples, visc, speed, T, mesh):
 	try: 
 		print "$ ./airfoil", num_samples, visc, speed, T, mesh
 		print "Loading..."
-		subprocess.check_call(["./airfoil", num_samples, visc, speed, T, mesh])
+		subprocess.check_call(["./airfoil", num_samples, visc, speed, T, mesh], cwd="../naca_airfoil/navier_stokes_solver")
 	except subprocess.CalledProcessError:
 		print "Oops: ./airfoil could not finish"
 		return False
