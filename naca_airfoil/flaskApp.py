@@ -7,9 +7,21 @@ import os
 import time
 from proj import convertFile
 import subprocess
-from plot_result import plot_file
+import swiftclient.client
+#from plot_result import plot_file
+from save_to_db import to_db, in_db
 
-app = Flask(__name__, template_folder="/home/ubuntu/naca_airfoil")
+app = Flask(__name__, template_folder="/home/ubuntu/molnProject")
+
+config = {'user':os.environ['OS_USERNAME'], 
+          'key':os.environ['OS_PASSWORD'],
+          'tenant_name':os.environ['OS_TENANT_NAME'],
+          'authurl':os.environ['OS_AUTH_URL']}
+
+conn = swiftclient.client.Connection(auth_version=2, **config)
+
+bucket_name = "MavaPictureContainer"
+dataBaseName = "pictureDatabase"
 
 @app.route('/')
 def form():
@@ -22,30 +34,52 @@ def runsh():
 	n_angles=request.form['n_angles']
 	n_nodes=request.form['n_nodes']
 	n_levels=request.form['n_levels']
+	num_samples=request.form['num_samples']
+	visc=request.form['visc']
+	speed=request.form['speed']
+	T=request.form['T']
 	print 1, "- - - - - - - - Run start - - - - - - - -"
-	########################
-	##### Create *.msh #####
-	########################
-	time_1 = time.time()
-	subprocess.call(["./run.sh", angle_start, angle_stop, n_angles, n_nodes, n_levels])
-	time_2 = time.time()
-	print 2, time_2 - time_1
-	#############################################
-	##### Convert *.msh to *.xml + lite mer #####
-	#############################################
-	appLocation = app.root_path
-	fileLocation = appLocation + "/msh/"
-	content = sorted(os.listdir(fileLocation))
-	response = group(convertFile.s(fileName, open(fileLocation+fileName, "r").read()) for fileName in content)
-	result = response.apply_async()
-	result.get()
-	time_3 = time.time()
-	print 3, time_3 - time_2
-	for t in result.get():
-		(fileNamePlot, data) = t
-		plot_file(fileNamePlot, data)
-	os.system("rm -rf  msh/*")
-	os.system("rm -rf  geo/*")
+	###########################
+	##### Check if exists #####
+	###########################
+	anglediff = (int(angle_stop) - int(angle_start)) / int(n_angles)
+	
+	angles = []
+	(header, fileContent) = conn.get_object(bucket_name, dataBaseName)
+	dbFile = open(dataBaseName, "w")
+	dbFile.write(fileContent)
+	dbFile.close()
+
+	############# Maste goras om.... #########################
+	for i in range(0, int(n_angles)):
+
+		angle = 0
+		angle = (int(angle_start) + anglediff * i)
+		print 1, angle
+		for level in range(int(n_levels)+1):
+			if in_db("r" + str(level) + "a" + str(angle) + "n" + n_nodes + "Num" + num_samples + "Visc" + visc + "Speed" + speed + "T" + T) == False :
+				print "Ja en vinkel!"
+				angles.append((angle,level))
+	print angles
+	if len(angles) != 0:
+		print "Nu skickas allt ivag :)"
+		response = group(convertFile.s(str(angle), n_nodes, str(level), num_samples, visc, speed, T) for (angle, level) in angles)
+		result = response.apply_async()
+		result.get()
+
+		####################################
+		for t in result.get():
+			fileNamePlot = t
+			#plot_file(fileNamePlot, data)
+			to_db(fileNamePlot, "")
+		db = open(dataBaseName, "r")
+		conn.put_object(bucket_name, dataBaseName, db)
+		#os.system("rm -rf  msh/*")
+		#os.system("rm -rf  geo/*")
+		#os.system("mv *.png pictures/")
+		#####################################
+		
+		##subprocess.call(["mv", "*.png", "pictures/"])
 
 	return render_template('site/runsh.html', 
 							angle_start=angle_start, 
