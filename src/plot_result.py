@@ -25,7 +25,7 @@ def plot_file(filename):
         s = f.read().split('\n')
         plot_result(s)
 
-def plot_result(filename, result_string):
+def plot_result(filename, result_string, args):
     time = []
     drag = []
     lift = []
@@ -33,9 +33,12 @@ def plot_result(filename, result_string):
     for line in data_list[1:]:
     	elements = line.split('\t')
         if len(elements) == 3: 
-	       	time.append(float(elements[0]))
-	        drag.append(float(elements[1]))
-	        lift.append(float(elements[2]))
+		try:
+		       	time.append(float(elements[0]))
+		        drag.append(float(elements[1]))
+	        	lift.append(float(elements[2]))
+		except:
+			continue
 
     plt.gca().set_color_cycle(['blue', 'red'])
     plt.plot(time, drag)
@@ -47,5 +50,5 @@ def plot_result(filename, result_string):
     plt.ylabel('Force')
     plt.title(filename)
     plt.yscale('log')
-    plt.savefig(os.path.splitext(filename)[0] + '.png')
+    plt.savefig('static/'+os.path.splitext(filename)[0] + str(args)+'.png')
 

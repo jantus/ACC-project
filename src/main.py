@@ -78,17 +78,17 @@ def runsh():
 
 	display_list = []
 	for elem in args_list:
-		plot = elem[0]+".png"
+		plot = elem[0]+str(elem[2])+".png"
 		if os.path.isfile("static/"+plot):
 			print "exists", plot
 			global result_list
-			result_list.append((plot, elem[0]))
+			result_list.append((plot, elem[0], elem[2]))
 			
 			display_list.append(plot)
 		else:
 			result = task.delay(elem[1], elem[2], elem[0])
 			global result_list
-			result_list.append((result, elem[0]))
+			result_list.append((result, elem[0], elem[2]))
 
 			display_list.append("Waiting for "+plot) 
 	print result_list
@@ -100,17 +100,18 @@ def results():
 	display_list = []
 	i = 0
 	print result_list
-	for result, filename in result_list:
+	for result, filename, args in result_list:
 		print result
 		if type(result) is str:
 			display_list.append(result) 
 		else:
-			print result.ready() == True
+			print "not in if",result.ready() == True
+
 			if result.ready() == True:
 				res = result.get() 
-				plot_result(res[0], res[1])
+				plot_result(res[0], res[1], args) 
 				global result_list
-				result_list[i] = (filename+".png", filename) 
+				result_list[i] = (filename+".png", filename, args) 
 			else: 
 				display_list.append("Waiting for "+filename) 					
 		i = i+1
