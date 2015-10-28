@@ -7,6 +7,9 @@ import time
 import sys
 import os
 
+
+result_list = []
+
 app = Flask(__name__, template_folder="/home/ubuntu/ACC-project/src")
 @app.route('/')
 def form():
@@ -60,38 +63,60 @@ def runsh():
 	angle_step = int(angle_size)/int(n_angles)
 	a_list = [angle_step*i for i in range(0, int(n_angles)+1)]
 	args_list = [] 
-	result_list = []
 	for j in range(0, int(n_levels)+1):
 		for i in a_list:
 			filename = "r"+str(j)+"a"+str(i)+"n"+str(n_nodes)
-			if os.path.isfile("plots/"+filename+".png"): 
-				print "Found file: "+filename+".png"
-				plot = filename+".png"
-				result_list.append(plot) 
-				continue
-			else:
-				run_args = {}
-				run_args["angle_start"] = str(angle_start)
-				run_args["angle_stop"] = str(angle_stop)
-				run_args["n_angles"] = str(n_angles)
-				run_args["n_nodes"] = str(n_nodes)
-				run_args["n_levels"] = str(n_levels)
-				
-				args = (filename, run_args, airfoil_args)
-				args_list.append(args)
+			run_args = {}
+			run_args["angle_start"] = str(angle_start)
+			run_args["angle_stop"] = str(angle_stop)
+			run_args["n_angles"] = str(n_angles)
+			run_args["n_nodes"] = str(n_nodes)
+			run_args["n_levels"] = str(n_levels)
+			
+			args = (filename, run_args, airfoil_args)
+			args_list.append(args)
 
+	display_list = []
 	for elem in args_list:
 		plot = elem[0]+".png"
-		if os.path.isfile(plot):
-			result_list.append(plot) 
+		if os.path.isfile("static/"+plot):
+			print "exists", plot
+			global result_list
+			result_list.append((plot, elem[0]))
+			
+			display_list.append(plot)
 		else:
-			result_list.append("waiting for "+elem[0]) 
+			result = task.delay(elem[1], elem[2], elem[0])
+			global result_list
+			result_list.append((result, elem[0]))
+
+			display_list.append("Waiting for "+plot) 
+	print result_list
 	
-	return render_template('site/results.html', result=result_list)
+	return render_template('site/results.html', result=display_list)
 
 @app.route('/results/')
 def results():
-	return render_template('site/results.html')
+	display_list = []
+	i = 0
+	print result_list
+	for result, filename in result_list:
+		print result
+		if type(result) is str:
+			display_list.append(result) 
+		else:
+			print result.ready() == True
+			if result.ready() == True:
+				res = result.get() 
+				plot_result(res[0], res[1])
+				global result_list
+				result_list[i] = (filename+".png", filename) 
+			else: 
+				display_list.append("Waiting for "+filename) 					
+		i = i+1
+			
+	
+	return render_template('site/results.html', result=display_list)
 
 
 def old():
