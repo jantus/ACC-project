@@ -1,0 +1,9 @@
+<a href="/results/">update reults</a>
+
+
+{% for img in result %}
+<div>
+	<h4>{{img}}</h4> 
+	<img src="{{url_for('static', filename=img)}}"> 
+</div> 
+{% endfor %} 
