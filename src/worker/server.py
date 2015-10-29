@@ -38,35 +38,46 @@ def initialize(name):
         
         print "Created server named:", SERVERNAME
 
-    time.sleep(15)
     ##############################
     #### Finding Floating IP #####
     ##############################
     floating_ip_information_list = nc.floating_ips.list()
     floating_ip_list = []
+    #print floating_ip_information_list
     for floating_ip_information in floating_ip_information_list:
-        if getattr(floating_ip_information, 'fixed_ip') == None:
-            floating_ip_list.append(getattr(floating_ip_information, 'ip'))
+  	#print floating_ip_information
+    	    if getattr(floating_ip_information, 'fixed_ip') == None:
+      		floating_ip_list.append(getattr(floating_ip_information, 'ip'))
+
     if len(floating_ip_list) == 0:
-        new_ip = nc.floating_ips.create(getattr(nc.floating_ip_pools.list()[0],'name'))
-   	print new_ip
-    	floating_ip_list.append(getattr(new_ip, 'ip'))
+  	new_ip = nc.floating_ips.create(getattr(nc.floating_ip_pools.list()[0],'name'))
+  	#print new_ip
+  	floating_ip_list.append(getattr(new_ip, 'ip'))
+
     floating_ip = floating_ip_list[0]
-    print floating_ip
-    floating_ip = nc.floating_ips.create(nc.floating_ip_pools.find(name="ext-net").name)
-    lacks_ip = True
-    while lacks_ip:
-    	try:
-            server.add_floating_ip(floating_ip)
-            print "Associated ip "+str(floating_ip.ip)+" with instance"
-	    lacks_ip = False
-   	except:
-            print "Could not associate ip with instance, terminated with message:",sys.exc_info()[0]
 
-    	floating_ip = nc.floating_ips.create(nc.floating_ip_pools.find(name="ext-net").name)
-  
+    print "Broker up! Setting floating ip: " + floating_ip 
 
-    return server, floating_ip.ip
+    
+    status = server.status
+    print status
+
+
+    ##############################
+    ########### Status ###########
+    ##############################
+    wait = 0
+    while not status == 'ACTIVE':
+	#print "Server status: " + status
+	print "Not ready... " + str(wait) + " seconds"
+    	time.sleep(2) 
+    	wait += 2
+    	server = nc.servers.get(server.id)
+    	status = server.status
+
+    server.add_floating_ip(floating_ip)
+
+    return server, floating_ip
 
 def terminate(name): 
     SERVERNAME = name 
@@ -78,10 +89,11 @@ def terminate(name):
         print "Found server named:", SERVERNAME
     try:
         nc.servers.delete(server)
-        print "Server terminated"
+        print "Server terminated", SERVERNAME
         sleep(15)
     except:
         print "Server is not definded"
+    time.sleet(15) 
 
 
 

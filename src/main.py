@@ -129,7 +129,7 @@ def results():
 					res = result.get() 
 					plot_result(res[0], res[1], args[2]) 
 					global result_list
-					result_list[i] = (filename+".png", filename, args[2]) 
+					result_list[i] = (filename+str(args[2])+".png", filename, args[2]) 
 				except:
 					print "Error occured, Restart"
 					result = task.delay(args[1], args[2], args[0])
