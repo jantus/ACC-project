@@ -93,7 +93,7 @@ def terminate(name):
         sleep(15)
     except:
         print "Server is not definded"
-    time.sleet(15) 
+    time.sleep(15) 
 
 
 

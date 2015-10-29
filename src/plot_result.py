@@ -40,6 +40,7 @@ def plot_result(filename, result_string, args):
 		except:
 			continue
 
+    plt.figure()
     plt.gca().set_color_cycle(['blue', 'red'])
     plt.plot(time, drag)
     plt.plot(time, lift)
