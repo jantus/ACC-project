@@ -115,11 +115,12 @@ def runsh():
 def results():
 	display_list = []
 	i = 0
-	print result_list
+	j = 0
 	for result, filename, args in result_list:
 		print result
 		if type(result) is str:
 			display_list.append(result) 
+			j = j+1
 		else:
 			print "not in if",result.ready() == True
 
@@ -142,7 +143,9 @@ def results():
 		i = i+1
 	
 	print  num_workers
-	if i == (len(result_list) - 1):
+	print len(result_list)
+	print i
+	if i == j:
 		print "killing workers"
 		for i in range(0, num_workers):
              		print "Killing worker named: ", worker_name+str(i)
