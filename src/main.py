@@ -9,7 +9,7 @@ import os
 
 
 result_list = []
-
+num_workers = 0
 app = Flask(__name__, template_folder="/home/ubuntu/ACC-project/src")
 @app.route('/')
 def form():
@@ -43,7 +43,8 @@ def runsh():
 	##########################################################	
 	# Add workers	
 	##########################################################	
-	num_workers = 4#int(n_angles)
+	global num_workers
+	num_workers = (int(n_angles) + 1)/2
 	worker_name = "group15-worker-"
 
 	for i in range(0, num_workers):
@@ -139,7 +140,16 @@ def results():
 			else: 
 				display_list.append("Waiting for "+filename) 					
 		i = i+1
-			
+	
+	print  num_workers
+	if i == (len(result_list) - 1):
+		print "killing workers"
+		for i in range(0, num_workers):
+             		print "Killing worker named: ", worker_name+str(i)
+	                worker.terminate(worker_name+str(i))
+
+
+                print "Crated "+str(num_workers)+" workers"
 	
 	return render_template('site/results.html', result=display_list)
 

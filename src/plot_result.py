@@ -52,4 +52,5 @@ def plot_result(filename, result_string, args):
     plt.title(filename)
     plt.yscale('log')
     plt.savefig('static/'+os.path.splitext(filename)[0] + str(args)+'.png')
+    plt.clf() 
 
