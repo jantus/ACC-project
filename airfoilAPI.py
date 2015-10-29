@@ -40,7 +40,16 @@ def run_airfoil():
 
 @fapp.route('/run',methods=['get'])
 def run():
-    obj = gen_meshes()
+    angle_start = str(0)
+    angle_stop = str(30)
+    n_angles = str(10)
+    n_nodes = str(200)
+    n_levels = str(3)
+    #obj = gen_meshes()
+    for i in range(0,n_angles):
+        angle = (angle_stop-angle_start)/n_angles
+        for j in range(0,n_levels):
+            taskList.append(runairfoil.delay('res'+str(i)+str(j),'10','0.0001','10','1',angle,n_angles,n_nodes,j)
     obj2 = run_airfoil()
     return obj2
 
