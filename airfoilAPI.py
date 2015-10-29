@@ -46,12 +46,13 @@ def run():
     n_nodes = str(200)
     n_levels = str(3)
     #obj = gen_meshes()
-    for i in range(0,n_angles):
-        angle = (angle_stop-angle_start)/n_angles
-        for j in range(0,n_levels):
-            taskList.append(runairfoil.delay('res'+str(i)+str(j),'10','0.0001','10','1',angle,n_angles,n_nodes,j)
-    obj2 = run_airfoil()
-    return obj2
+    taskList = []
+    for i in range(0,int(n_angles)):
+        angle = (int(angle_stop)-int(angle_start))/int(n_angles)
+        for j in range(0,int(n_levels)):
+            taskList.append(runairfoil.delay('res'+str(i)+str(j),'10','0.0001','10','1',str(angle),str(n_angles),str(n_nodes),str(j)))
+    #obj2 = run_airfoil()
+    return json.dumps({"airfoil":"finished"})
 
 if __name__ == '__main__':
 	fapp.run(host='0.0.0.0',debug=True)
