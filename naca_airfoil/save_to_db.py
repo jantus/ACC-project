@@ -3,6 +3,14 @@ import sys
 import os
 import swiftclient.client
 
+
+###############################################################################
+# Arguments(1):
+#		key: the name of the key 
+#		value: a value to the key
+# Return:
+# 	 
+###############################################################################
 def to_db(key, value):
 	dataBaseName = "pictureDatabase"
 	db = pickledb.load(dataBaseName, False)
@@ -12,6 +20,12 @@ def to_db(key, value):
 		db.set(key, value)
 		db.dump()
 
+###############################################################################
+# Arguments(1):
+#		fileName: name of the key to search for
+# Return:
+# 	 	Bool: return True if fileName already exsits 
+###############################################################################
 def in_db(fileName):
 	dataBaseName = "pictureDatabase"
 	db = pickledb.load(dataBaseName, False)
